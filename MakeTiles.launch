@@ -13,7 +13,7 @@
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="micropolisj.build_tool.MakeTiles"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="tiles.rc ../resources"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="pfgd-micropolis"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="pfgd-micropolis-new_building"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dcomplete_batch"/>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:pfgd-micropolis/graphics}"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:pfgd-micropolis-new_building/graphics}"/>
 </launchConfiguration>
