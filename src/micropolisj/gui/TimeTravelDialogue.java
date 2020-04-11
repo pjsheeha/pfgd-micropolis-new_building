@@ -19,7 +19,7 @@ import micropolisj.engine.*;
 import static micropolisj.gui.MainWindow.formatFunds;
 import static micropolisj.gui.MainWindow.formatGameDate;
 
-public class TimeTravelDialogue extends JDialog
+public class TimeTravelDialogue extends JDialog //this is a time travel window script (modification of budgetdialogue)
 {
 	Micropolis engine;
 	MainWindow mainw;

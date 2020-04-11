@@ -1898,7 +1898,7 @@ public class Micropolis
 	{
 		return popDensity[ypos/2][xpos/2];
 	}
-	void archiveTimeTravel() {
+	void archiveTimeTravel() { //this happens every year- archive the mapbackups
 		int x = (getWidth());
 		int y = (getHeight());
 		assert testBounds(x, y);
@@ -1921,7 +1921,7 @@ public class Micropolis
 
 		}
 		mapBackups.set(myYear,z);
-		CityBudget m = new CityBudget(this);
+		CityBudget m = new CityBudget(this); //make a new citybudget
 		m.totalFunds = budget.totalFunds;
 		m.taxFund = budget.taxFund;
 		m.roadFundEscrow = budget.roadFundEscrow;
@@ -1932,18 +1932,18 @@ public class Micropolis
 		budgetList.set(myYear, m);
 		System.out.println("ju"+cashFlow);
 
-		cashFlows.set(myYear, cashFlow);
+		cashFlows.set(myYear, cashFlow); //set cashflow (this is actually unnecessary lol)
 
 	}
 	
-	public void doTimeTravel() {
+	public void doTimeTravel() { //this is the function that actually enacts the time travel
 		int x = (getWidth());
 		int y = (getHeight());
 		assert testBounds(x, y);
 		for (int x1 = 0; x1< y-1; x1++) {
 			for (int y1 = 0; y1< y-1; y1++) {
 
-				setTile(x1, y1, (char)mapBackups.get(myYear)[y1][x1]);
+				setTile(x1, y1, (char)mapBackups.get(myYear)[y1][x1]);//go to the year element of mapbackups and set the tile
 
 		
 		}
@@ -1956,7 +1956,7 @@ public class Micropolis
 		budget.taxFund = budgetList.get(myYear).taxFund;
 		budget.roadFundEscrow = budgetList.get(myYear).roadFundEscrow;
 		budget.fireFundEscrow = budgetList.get(myYear).fireFundEscrow;
-		budget.policeFundEscrow = budgetList.get(myYear).policeFundEscrow;
+		budget.policeFundEscrow = budgetList.get(myYear).policeFundEscrow;//change budget based on budgetlist
 		fireFundsChanged();
 
 
