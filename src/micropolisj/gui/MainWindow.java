@@ -780,11 +780,40 @@ public class MainWindow extends JFrame
 				onAboutClicked();
 			}
 			}));
+		
 		helpMenu.add(menuItem);
+		JMenu toolsMenu = new JMenu(strings.getString("menu.tools"));
+		setupKeys(toolsMenu, "menu.tools");
+		menuBar.add(toolsMenu);
 
+		menuItem = new JMenuItem(strings.getString("menu.tools.time"));
+		setupKeys(menuItem, "menu.tools.time");
+		menuItem.addActionListener(wrapActionListener(
+			new ActionListener() {
+			public void actionPerformed(ActionEvent ev)
+			{
+				onTimeTravelClicked();
+			}
+			}));
+		toolsMenu.add(menuItem);
 		setJMenuBar(menuBar);
 	}
+	void onTimeTravelClicked()
+	{
+		dirty1 = true;
+		showTimeTravelWindow();
 
+	}
+	private void showTimeTravelWindow()
+	{
+
+
+		TimeTravelDialogue dlg = new TimeTravelDialogue(this, getEngine());
+		dlg.setModal(true);
+		dlg.setVisible(true);
+
+
+	}
 	private Micropolis getEngine()
 	{
 		return engine;

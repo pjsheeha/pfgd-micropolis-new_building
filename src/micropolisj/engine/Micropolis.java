@@ -25,6 +25,7 @@ public class Micropolis
 	Random PRNG;
 
 	// full size arrays
+	List<int [][]> mapBackups = new ArrayList<>();
 	char [][] map;
 	boolean [][] powerMap;
 
@@ -93,7 +94,7 @@ public class Micropolis
 
 	static final int DEFAULT_WIDTH = 120;
 	static final int DEFAULT_HEIGHT = 100;
-
+	public List<CityBudget> budgetList = new ArrayList<>();
 	public final CityBudget budget = new CityBudget(this);
 	public boolean autoBulldoze = true;
 	public boolean autoBudget = false;
@@ -177,7 +178,7 @@ public class Micropolis
 	int roadEffect = 32;
 	int policeEffect = 1000;
 	int fireEffect = 1000;
-
+	List<Integer> cashFlows = new ArrayList<Integer>();
 	int cashFlow; //net change in totalFunds in previous year
 
 	boolean newPower;
@@ -185,7 +186,7 @@ public class Micropolis
 	int floodCnt; //number of turns the flood will last
 	int floodX;
 	int floodY;
-
+	public int myYear = 0;
 	public int cityTime;  //counts "weeks" (actually, 1/48'ths years)
 	int scycle; //same as cityTime, except mod 1024
 	int fcycle; //counts simulation steps (mod 1024)
@@ -220,7 +221,23 @@ public class Micropolis
 
 	protected void init(int width, int height)
 	{
+
 		map = new char[height][width];
+		for (int i = 0; i < 200; i++) {
+			mapBackups.add(new int[height][width]);
+			CityBudget m = new CityBudget(this);
+			m.totalFunds = 20000;
+			m.taxFund = 0;
+			m.roadFundEscrow = 0;
+			m.fireFundEscrow = 0;
+			m.policeFundEscrow = 0;
+			//System.out.println("uh"+m.totalFunds);
+
+			
+			budgetList.add(m );
+			cashFlows.add(0 );
+
+		}
 		powerMap = new boolean[height][width];
 
 		int hX = (width+1)/2;
@@ -557,8 +574,20 @@ public class Micropolis
 		case 0:
 			scycle = (scycle + 1) % 1024;
 			cityTime++;
+			if (cityTime%48 ==0) {
+
+				myYear+=1;
+				System.out.println(myYear);
+				if (myYear< 199) {
+					archiveTimeTravel();
+
+				//System.out.println(map == mapBackups.get(myYear));
+
+				}
+			}
 			if (scycle % 2 == 0) {
 				setValves();
+				//System.out.println("P");
 			}
 			clearCensus();
 			break;
@@ -1468,7 +1497,6 @@ public class Micropolis
 		bb.put("STADIUM_FULL", new MapScanner(this, MapScanner.B.STADIUM_FULL));
 		bb.put("AIRPORT", new MapScanner(this, MapScanner.B.AIRPORT));
 		bb.put("SEAPORT", new MapScanner(this, MapScanner.B.SEAPORT));
-
 		this.tileBehaviors = bb;
 	}
 
@@ -1492,7 +1520,9 @@ public class Micropolis
 		}
 
 		TileBehavior b = tileBehaviors.get(behaviorStr);
+		
 		if (b != null) {
+			
 			b.processTile(xpos, ypos);
 		}
 		else {
@@ -1549,6 +1579,7 @@ public class Micropolis
 
 	boolean hasSprite(SpriteKind kind)
 	{
+		//System.out.println(getSprite(kind));
 		return getSprite(kind) != null;
 	}
 
@@ -1781,6 +1812,7 @@ public class Micropolis
 		budget.fireFundEscrow = 0;
 		budget.policeFundEscrow = 0;
 	}
+	
 
 	/** Annual maintenance cost of each police station. */
 	static final int POLICE_STATION_MAINTENANCE = 100;
@@ -1866,7 +1898,79 @@ public class Micropolis
 	{
 		return popDensity[ypos/2][xpos/2];
 	}
+	void archiveTimeTravel() {
+		int x = (getWidth());
+		int y = (getHeight());
+		assert testBounds(x, y);
+		//System.out.println(map.length);
+		//System.out.println(map[y-1].length);
 
+		int[][] z = new int[map.length][map[y-1].length];
+
+		for (int y1 = 0; y1 < map.length; y1++) {
+			int[] k = new int[map[y-1].length];
+
+			for (int x1 = 0; x1 < map[y1].length-1; x1++) {
+
+				int tile = getTile(x1,y1);
+				//System.out.println(tile);
+
+				k[x1] = tile;
+			}
+			z[y1] = k;
+
+		}
+		mapBackups.set(myYear,z);
+		CityBudget m = new CityBudget(this);
+		m.totalFunds = budget.totalFunds;
+		m.taxFund = budget.taxFund;
+		m.roadFundEscrow = budget.roadFundEscrow;
+		m.fireFundEscrow = budget.fireFundEscrow;
+		m.policeFundEscrow = budget.policeFundEscrow;
+		System.out.println("uh"+m.totalFunds);
+
+		budgetList.set(myYear, m);
+		System.out.println("ju"+cashFlow);
+
+		cashFlows.set(myYear, cashFlow);
+
+	}
+	
+	public void doTimeTravel() {
+		int x = (getWidth());
+		int y = (getHeight());
+		assert testBounds(x, y);
+		for (int x1 = 0; x1< y-1; x1++) {
+			for (int y1 = 0; y1< y-1; y1++) {
+
+				setTile(x1, y1, (char)mapBackups.get(myYear)[y1][x1]);
+
+		
+		}
+		}
+		System.out.println("ah"+budgetList.get(myYear).totalFunds);
+		System.out.println("cah"+cashFlows.get(myYear));
+
+
+		budget.totalFunds = budgetList.get(myYear).totalFunds;
+		budget.taxFund = budgetList.get(myYear).taxFund;
+		budget.roadFundEscrow = budgetList.get(myYear).roadFundEscrow;
+		budget.fireFundEscrow = budgetList.get(myYear).fireFundEscrow;
+		budget.policeFundEscrow = budgetList.get(myYear).policeFundEscrow;
+		fireFundsChanged();
+
+
+
+		checkPowerMap();
+		setValves();
+		ptlScan();
+
+		fireWholeMapChanged();
+		fireDemandChanged();
+		//collectTax();
+
+
+	}
 	void doMeltdown(int xpos, int ypos)
 	{
 		meltdownLocation = new CityLocation(xpos, ypos);
